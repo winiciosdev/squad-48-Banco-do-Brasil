@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Charging Planner</title>
+    <link rel="stylesheet" href="./css/styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div>
+      <header class="container site-header">
+        <div class="container header-content">
+          <button id="menu-toggle" class="menu-toggle-btn">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+          </button>
+          <nav id="sidebar" class="sidebar-menu">
+            <ul class="sidebar-links">
+              <li>
+                <a href="/home" class="active">
+                  <i class="fa-solid fa-house"></i>
+                  Início
+                </a>
+              </li>
+              <li>
+                <a href="/rotas">
+                  <i class="fa-solid fa-map-location"></i>
+                  Rotas
+                </a>
+              </li>
+              <li>
+                <a href="/estacoes">
+                  <i class="fa-solid fa-bolt"></i>
+                  Estações
+                </a>
+              </li>
+              <li>
+                <a href="/planos">
+                  <i class="fa-solid fa-file-contract"></i>
+                  Planos
+                </a>
+              </li>
+              <li>
+                <a href="/sobre">
+                  <i class="fa-solid fa-circle-info"></i>
+                  Sobre
+                </a>
+              </li>
+            </ul>
+            <div class="sidebar-footer">
+              <button id="theme-toggle" class="theme-toggle-btn">
+                <i id="theme-icon" class="fa-solid fa-toggle-off"></i>
+              </button>
+            </div>
+          </nav>
+          <a href="/" class="logo">
+            <i class="fas fa-charging-station"></i>
+            <div class="logo-text">
+              <span class="logo-line">Charging</span>
+              <span class="logo-line">Planner</span>
+            </div>
+          </a>
+          <div class="user-info">
+            <i class="fa-solid fa-user"></i>
+            <span class="user-name">Olá, Motorista!</span>
+          </div>
+        </div>
+      </header>
+      <main class="container main-content">
+        <section class="map-section">
+          <form class="search-form">
+            <div class="form-group">
+              <div class="input-icon">
+                <i class="fas fa-location-dot"></i>
+                <input
+                  type="text"
+                  id="origin"
+                  class="form-control"
+                  placeholder="Endereço de origem"
+                />
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="input-icon">
+                <i class="fas fa-flag-checkered"></i>
+                <input
+                  type="text"
+                  id="destination"
+                  class="form-control"
+                  placeholder="Para onde vamos?"
+                />
+              </div>
+            </div>
+            <div class="search-actions">
+              <button type="submit" class="btn btn-outline">
+                Calcular Rota
+              </button>
+            </div>
+          </form>
+          <div id="map-container">
+            <div id="map">
+              <div class="map-controls">
+                <button id="locate-btn" title="Minha localização">
+                  <i class="fas fa-location-arrow"></i>
+                </button>
+                <button id="filter-btn" title="Filtar estações">
+                  <i class="fas fa-filter"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+        <aside class="sidebar">
+          <div class="info-card">
+            <div class="card-header">
+              <h3 class="card-title">Autonomia do Veículo</h3>
+              <i class="fas fa-ellipsis-h"></i>
+            </div>
+            <div class="card-content">
+              <div class="battery-info">
+                <div class="battery-level">
+                  <div class="battery-fill" style="width: 85%"></div>
+                </div>
+                <span>85% - 340 km de autonomia</span>
+              </div>
+              <div class="vehicle-details">
+                <div class="detail-item">
+                  <span class="detail-label">Marca/Modelo</span>
+                  <span class="detail-value">BYD DOLPHIN</span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label">Tipo de Carregador</span>
+                  <span class="detail-value">CCS Combo</span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label">Autonomia Máxima</span>
+                  <span class="detail-value">400 km</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="stations-panel">
+            <div class="panel-header">
+              <h3 class="card-title">Estações</h3>
+              <div class="sort-options">
+                <span class="sort-tab" data-type="favorites">Favoritas</span>
+                <span class="sort-tab active" data-type="closest"
+                  >Mais próximas</span
+                >
+                <span class="sort-tab" data-type="fastest">Mais rápidas</span>
+              </div>
+            </div>
+            <div class="stations-list">
+              <!-- Estações serão carregadas dinamicamente -->
+            </div>
+          </div>
+        </aside>
+      </main>
+
+      <footer class="site-footer">
+        <div class="container">
+          <div class="footer-content">
+            <div class="footer-column">
+              <h3>Charging Planner</h3>
+              <p>
+                O melhor planejador de rotas para veículos elétricos do mercado.
+              </p>
+            </div>
+            <div class="footer-column">
+              <h3>Links Úteis</h3>
+              <ul>
+                <li><a href="/sobre">Sobre Nós</a></li>
+                <li><a href="/contato">Contato</a></li>
+                <li><a href="/blog">Blog</a></li>
+                <li><a href="/faq">FAQ</a></li>
+              </ul>
+            </div>
+            <div class="footer-column">
+              <h3>Recursos</h3>
+              <ul>
+                <li><a href="/api">API para Desenvolvedores</a></li>
+                <li><a href="/parceiros">Seja um Parceiro</a></li>
+                <li><a href="/integracao">Integração com Veículos</a></li>
+              </ul>
+            </div>
+            <div class="footer-column">
+              <h3>Contato</h3>
+              <ul>
+                <li><i class="fas fa-envelope"></i> contato@evplanner.com</li>
+                <li><i class="fas fa-phone"></i> (11) 1234-5678</li>
+                <li><i class="fas fa-map-marker-alt"></i> Recife, Brasil</li>
+              </ul>
+            </div>
+          </div>
+          <div class="copyright">
+            &copy; 2025 Charging Planner. Todos os direitos reservados.
+          </div>
+        </div>
+      </footer>
+    </div>
+    <!-- Modal de Filtros -->
+    <div id="filter-modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Filtrar Estações</h3>
+          <button class="close-modal" id="close-filter-modal">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="filter-group">
+            <h4>Tipo de Carregador</h4>
+            <label><input type="checkbox" checked /> CCS Combo</label>
+            <label><input type="checkbox" checked /> CHAdeMO</label>
+            <label><input type="checkbox" checked /> Tipo 2</label>
+          </div>
+
+          <div class="filter-group">
+            <h4>Velocidade de Carregamento</h4>
+            <label><input type="checkbox" checked /> Rápido (50kW+)</label>
+            <label
+              ><input type="checkbox" checked /> Ultra-rápido (150kW+)</label
+            >
+            <label><input type="checkbox" checked /> Padrão (22kW)</label>
+          </div>
+
+          <div class="filter-group">
+            <h4>Disponibilidade</h4>
+            <label><input type="checkbox" checked /> Disponível agora</label>
+            <label><input type="checkbox" /> Com tempo de espera</label>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button id="apply-filters" class="btn btn-primary">
+            Aplicar Filtros
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- Modal do Carro -->
+    <div id="car-modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Informações do Veículo</h3>
+          <img
+            src="./assets/dolphin.png"
+            alt="Imagem do Carro"
+            class="modal-car-image"
+          />
+          <button class="close-modal" id="close-car-modal">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p><strong>Marca/Modelo:</strong> BYD DOLPHIN</p>
+          <p><strong>Tipo de Carregador:</strong> CCS Combo</p>
+          <p><strong>Autonomia Máxima:</strong> 405 km</p>
+          <span><strong>Cor:</strong> Cinza</span>
+          <span><strong>Ano:</strong> 2025</span>
+          <div class="battery-info">
+            <div class="battery-level">
+              <div class="battery-fill" style="width: 85%"></div>
+            </div>
+            <span>85% - 340 km de autonomia</span>
+          </div>
+          <!-- Você pode adicionar mais detalhes -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal do Usuário -->
+    <div id="user-modal" class="modal">
+      <div class="modal-content">
+        <header class="modal-header">
+          <h3>Perfil do Usuário</h3>
+          <button class="close-modal" id="close-user-modal">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </header>
+        <section class="user-profile">
+          <figure class="user-icon-large">
+            <img src="./assets/circle-user-solid.svg" alt="Imagem de perfil do usuário" class="modal-user-image">
+          </figure>
+
+          <div class="modal-body user-modal-body">
+            <p><strong>Nome:</strong> João da Silva</p>
+            <p><strong>Email:</strong> joao@email.com</p>
+            <p><strong>Telefone:</strong> (81) 98765-4321</p>
+          </div>
+        </section>
+      </div>
+    </div>
+    <script src="https://unpkg.com/@mapbox/polyline@1.1.1/src/polyline.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="./js/scripts.js"></script>
+  </body>
+</html>
