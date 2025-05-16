@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TesteCalculo</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 30px;
+      background-color: #f9f9f9;
+      display: flex;
+      justify-content: center;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 20px;
+      width: 320px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .car-image {
+      width: 100%;
+      border-radius: 10px;
+    }
+
+    .add-carros {
+      font-size: 0.8em;
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    .form-container {
+      margin-top: 20px;
+    }
+
+    label {
+      font-size: 0.9em;
+      margin-top: 10px;
+      display: block;
+    }
+
+    input, button {
+      width: 100%;
+      padding: 8px;
+      margin-top: 6px;
+      margin-bottom: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    #resultado {
+      margin-top: 20px;
+      font-size: 1em;
+      font-weight: bold;
+      color: #333;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h2>Meu Carro</h2>
+    <img src="imgCar.png" class="car-image" alt="Carro Branco" />
+    <p class="add-carros">Adicionar outro carro</p>
+
+    <div class="form-container">
+      <h3>Calcular Autonomia</h3>
+
+      <label>Capacidade da bateria (kWh):</label>
+      <input type="number" id="capacidade" placeholder="Ex: 73.2" />
+
+      <label>Consumo médio (kWh por 100 km):</label>
+      <input type="number" id="consumo" placeholder="Ex: 26.91" />
+
+      <label>Nível atual da bateria (%):</label>
+      <input type="number" id="nivel" placeholder="Ex: 60" />
+
+      <button onclick="calcularAutonomia()">Calcular</button>
+
+      <div id="resultado"></div>
+    </div>
+  </div>
+
+  <script src="calculoPuro.js"></script>
+</body>
+</html>
