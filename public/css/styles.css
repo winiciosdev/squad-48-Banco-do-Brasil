@@ -53,6 +53,7 @@ body {
   position: sticky;
   top: 0;
   z-index: 1000;
+  margin-bottom: 5px
 }
 .header-content {
   display: flex;
@@ -83,7 +84,7 @@ body {
 
 /* Animação para virar X */
 .menu-toggle-btn.active .bar:nth-child(1) {
-  transform: rotate(45deg) translate(7px, 7px);
+  transform: rotate(45deg) translate(8px, 8px);
 }
 
 .menu-toggle-btn.active .bar:nth-child(2) {
@@ -91,7 +92,7 @@ body {
 }
 
 .menu-toggle-btn.active .bar:nth-child(3) {
-  transform: rotate(-45deg) translate(7px, -7px);
+  transform: rotate(-45deg) translate(5px, -6px);
 }
 
 /* .logo {
@@ -260,8 +261,10 @@ body {
   display: grid;
   grid-template-columns: 1fr 450px;
   gap: 30px;
-  padding: 0px ;
-  height: 100%; 
+  padding: 1px 0;
+  height: 100%;
+  padding-left: 10px;  /* Espaço à esquerda */
+  padding-right: 10px; /* Espaço à direita */
 }
 
 .map-section {
@@ -588,7 +591,8 @@ body {
   font-size: 14px;
   padding: 10px 20px; 
   border-top: 1px solid var(--border-color);
-  margin-top: auto; 
+  margin-top: 5px;
+  padding-top: 5px; /* Espaço interno adicional se quiser */
 }
 
 .footer-content {

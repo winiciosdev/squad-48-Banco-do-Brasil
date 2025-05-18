@@ -482,7 +482,7 @@ function createCustomIcon(type) {
   let html, iconSize;
   
   if (type === 'origin') {
-    html = '<i class="fa-solid fa-map-pin" style="color: #000000; font-size: 2em;"></i>';
+    html = '<i class="fas fa-location-dot" style="color: #000000; font-size: 2em;"></i>';
     iconSize = [30, 30];
   } else if (type === 'destination') {
     html = '<i class="fa-solid fa-flag-checkered" style="color: #000000; font-size: 1.5em;"></i>';
