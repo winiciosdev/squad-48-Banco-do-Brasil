@@ -16,8 +16,8 @@
   </head>
   <body>
     <div>
-      <header class="container site-header">
-        <div class="container header-content">
+      <header class="site-header">
+        <div class="header-content">
           <button id="menu-toggle" class="menu-toggle-btn">
             <span class="bar"></span>
             <span class="bar"></span>
@@ -39,7 +39,7 @@
               </li>
               <li>
                 <a href="/estacoes">
-                  <i class="fa-solid fa-bolt"></i>
+                  <i class="fas fa-charging-station"></i>
                   Estações
                 </a>
               </li>
@@ -63,7 +63,10 @@
             </div>
           </nav>
           <a href="/" class="logo">
-            <i class="fas fa-charging-station"></i>
+            <div class="icon-container">
+              <i class="fa-solid fa-map-location"></i>
+              <i class="fa-solid fa-bolt"></i>
+            </div>
             <div class="logo-text">
               <span class="logo-line">Charging</span>
               <span class="logo-line">Planner</span>
@@ -75,7 +78,7 @@
           </div>
         </div>
       </header>
-      <main class="container main-content">
+      <main class="main-content">
         <section class="map-section">
           <form class="search-form">
             <div class="form-group">
@@ -290,7 +293,11 @@
         </header>
         <section class="user-profile">
           <figure class="user-icon-large">
-            <img src="./assets/circle-user-solid.svg" alt="Imagem de perfil do usuário" class="modal-user-image">
+            <img
+              src="./assets/circle-user-solid.svg"
+              alt="Imagem de perfil do usuário"
+              class="modal-user-image"
+            />
           </figure>
 
           <div class="modal-body user-modal-body">

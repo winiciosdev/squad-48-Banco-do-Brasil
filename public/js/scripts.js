@@ -2,7 +2,10 @@ document.addEventListener("DOMContentLoaded", function () {
   // Variáveis globais
   let map
   let markers = []
-  let allStations = [] // Padronizado para português
+  let allStations = []
+  let routeLine = null
+  let originMarker = null
+  let destinationMarker = null
 
   // Elementos Gerais
   const menuToggle = document.getElementById("menu-toggle")
@@ -220,8 +223,8 @@ document.addEventListener("DOMContentLoaded", function () {
       div.classList.add("station-item")
 
       div.innerHTML = `
-      <div class="station-icon">
-        <i class="fas fa-charging-station"></i>
+      <div class="station-icon ${!estacao.available ? "unavailable" : ""}">
+        <i class="fas fa-charging-station station-icon-inner"></i>
         </div>
         <div class="station-info">
         <h3 class="station-name">${estacao.name}</h3>
@@ -239,7 +242,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // Abre modal ao clicar na estação (exceto no coração)
       div.addEventListener("click", () => {
-        abrirModal(estacao)
+        openModal(estacao)
       })
 
       container.appendChild(div)
@@ -264,15 +267,66 @@ document.addEventListener("DOMContentLoaded", function () {
     markers = []
 
     stations.forEach((station) => {
-      const marker = L.marker([station.lat, station.lng]).addTo(map).bindPopup(`
-          <strong>${station.name}</strong><br>
-          Tipo: ${station.type}<br>
-          Velocidade: ${station.speed}<br>
-          Distância: ${station.distance} km<br>
-          Avaliação: ${station.rating} ★<br>
-          Status: ${station.available ? "Disponível" : "Indisponível"}
-        `)
+      const marker = L.marker([station.lat, station.lng], {
+        icon: createStationIcon(station),
+      }).addTo(map).bindPopup(`
+        <strong>${station.name}</strong><br>
+        Tipo: ${station.type}<br>
+        Velocidade: ${station.speed}<br>
+        Distância: ${station.distance} km<br>
+        Avaliação: ${station.rating} ★<br>
+        Status: ${station.available ? "Disponível" : "Indisponível"}
+      `)
       markers.push(marker)
+    })
+  }
+
+  // Adicione esta função para criar ícones de estações
+  function createStationIcon(station) {
+    const availableColor = "#4caf50"
+    const unavailableColor = "#e74c3c"
+
+    const iconHtml = `
+    <div class="custom-icon" style="position: relative; width: 2.5em; height: 2.5em;">
+      <i class="fa-solid fa-location-pin" style="
+        position: absolute;
+        top: 0;
+        left: 0;
+        font-size: 2.5em;
+        color: ${station.available ? availableColor : unavailableColor};
+      "></i>
+      <i class="fa-solid fa-bolt" style="
+        position: absolute;
+        top: 40%;
+        left: 39%;
+        transform: translate(-50%, -50%);
+        font-size: 1.2em;
+        color: black;
+        z-index: 2;
+      "></i>
+      ${
+        !station.available
+          ? `
+      <span style="
+        position: absolute;
+        top: 40%;
+        left: 39%;
+        width: 1.5em;
+        height: 2px;
+        background: ${unavailableColor};
+        transform: translate(-50%, -50%) rotate(45deg);
+        z-index: 3;
+      "></span>
+      `
+          : ""
+      }
+    </div>
+  `
+
+    return L.divIcon({
+      html: iconHtml,
+      iconSize: [30, 30],
+      className: "custom-station-icon",
     })
   }
 
@@ -299,49 +353,147 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   async function calculateRoute() {
-    const destinationInput = document.getElementById("destination").value
+const destinationInput = document.getElementById("destination").value;
 
-    if (!destinationInput) {
-      alert("Por favor, preencha o destino.")
-      return
+  if (!destinationInput) {
+    alert("Por favor, preencha o destino.");
+    return;
+  }
+
+  let origin = null;
+  const originInput = document.getElementById("origin").value;
+
+  if (originInput.trim()) {
+    origin = await geocodeAddress(originInput);
+  } else {
+    origin = await getCurrentLocation();
+    if (!origin) {
+      alert("Não foi possível obter sua localização atual.");
+      return;
     }
+  }
 
-    let origin = null
-    const originInput = document.getElementById("origin").value
+  const destination = await geocodeAddress(destinationInput);
 
-    if (originInput.trim()) {
-      origin = await geocodeAddress(originInput)
+  if (!origin || !destination) {
+    alert("Endereço inválido. Por favor, verifique os endereços informados.");
+    return;
+  }
+
+  // Limpa qualquer rota existente
+  if (routeLine) {
+    map.removeLayer(routeLine);
+    routeLine = null;
+  }
+  if (originMarker) {
+    map.removeLayer(originMarker);
+    originMarker = null;
+  }
+  if (destinationMarker) {
+    map.removeLayer(destinationMarker);
+    destinationMarker = null;
+  }
+
+  // Cria marcadores personalizados
+  originMarker = L.marker([origin.lat, origin.lon], {
+    icon: createCustomIcon('origin')
+  }).addTo(map).bindPopup("Origem");
+
+  destinationMarker = L.marker([destination.lat, destination.lon], {
+    icon: createCustomIcon('destination')
+  }).addTo(map).bindPopup("Destino");
+
+  // Usa a API de roteamento do OSRM
+  try {
+    const response = await fetch(
+      `https://router.project-osrm.org/route/v1/driving/${origin.lon},${origin.lat};${destination.lon},${destination.lat}?overview=full&geometries=geojson`
+    );
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const data = await response.json();
+
+    if (data.routes && data.routes.length > 0) {
+      const route = data.routes[0];
+      
+      // Verifica se a geometria existe e está no formato esperado
+      if (!route.geometry || !route.geometry.coordinates) {
+        throw new Error("Formato de geometria inválido na resposta da API");
+      }
+
+      // Cria a linha da rota
+      const routeCoordinates = route.geometry.coordinates.map(coord => [coord[1], coord[0]]);
+      
+      routeLine = L.polyline(routeCoordinates, {
+        color: '#000000',
+        weight: 5,
+        opacity: 0.7,
+        smoothFactor: 1
+      }).addTo(map);
+
+      // Centraliza o mapa para mostrar toda a rota
+      const bounds = L.latLngBounds(routeCoordinates);
+      map.fitBounds(bounds);
+      
+      // Filtra estações próximas à rota
+      filterStationsNearRoute(origin, destination);
     } else {
-      origin = await getCurrentLocation()
+      alert("Não foi possível calcular a rota. A API não retornou rotas válidas.");
     }
+  } catch (error) {
+    console.error("Erro ao calcular rota:", error);
+    alert(`Erro ao calcular rota: ${error.message}`);
+  }
+}
 
-    const destination = await geocodeAddress(destinationInput)
+function filterStationsNearRoute(origin, destination) {
+  // Calcula o ponto médio da rota para usar como referência
+  const midPoint = {
+    lat: (origin.lat + destination.lat) / 2,
+    lon: (origin.lon + destination.lon) / 2
+  };
 
-    if (!origin || !destination) {
-      alert("Endereço inválido.")
-      return
-    }
+  // Filtra estações dentro de 5km do ponto médio
+  const R = 6371; // Raio da Terra em km
+  const maxDistance = 5; // 5km
 
-    // Limpa qualquer rota existente
-    if (window.routeLine) {
-      map.removeLayer(window.routeLine)
-      delete window.routeLine
-    }
+  const stationsNearRoute = allStations.filter(station => {
+    const dLat = (station.lat - midPoint.lat) * Math.PI / 180;
+    const dLon = (station.lng - midPoint.lon) * Math.PI / 180;
+    const a = 
+      Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.cos(midPoint.lat * Math.PI/180) * 
+      Math.cos(station.lat * Math.PI/180) * 
+      Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    const distance = R * c;
+    
+    return distance <= maxDistance;
+  });
 
-    // Adiciona marcadores de origem e destino
-    L.marker([origin.lat, origin.lon])
-      .addTo(map)
-      .bindPopup("Origem")
-      .openPopup()
+  renderStations(stationsNearRoute);
+  renderMapMarkers(stationsNearRoute);
+}
 
-    L.marker([destination.lat, destination.lon]).addTo(map).bindPopup("Destino")
-
-    // Centraliza o mapa para mostrar ambos os pontos
-    const bounds = L.latLngBounds(
-      [origin.lat, origin.lon],
-      [destination.lat, destination.lon]
-    )
-    map.fitBounds(bounds)
+// Adicione esta função para criar ícones personalizados
+function createCustomIcon(type) {
+  let html, iconSize;
+  
+  if (type === 'origin') {
+    html = '<i class="fa-solid fa-map-pin" style="color: #000000; font-size: 2em;"></i>';
+    iconSize = [30, 30];
+  } else if (type === 'destination') {
+    html = '<i class="fa-solid fa-flag-checkered" style="color: #000000; font-size: 1.5em;"></i>';
+    iconSize = [30, 30];
+  }
+  
+  return L.divIcon({
+    html: html,
+    iconSize: iconSize,
+    className: 'custom-marker-icon'
+  });
   }
 
   async function getCurrentLocation() {

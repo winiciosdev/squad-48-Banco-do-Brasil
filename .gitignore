@@ -1,0 +1,12 @@
+# Ignorar dependências
+node_modules/
+.vscode/
+
+# Ignorar arquivos de build
+dist/
+build/
+
+# Ignorar arquivos temporários
+*.log
+.env
+*.tmp

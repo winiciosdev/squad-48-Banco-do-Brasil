@@ -37,6 +37,7 @@ body {
   background-color: var(--background-light);
   color: var(--text-dark);
   line-height: 1.6;
+
 }
 /* Layout do Site */
 .container {
@@ -73,7 +74,7 @@ body {
 }
 
 .bar {
-  height: 4px;
+  height: 5px;
   width: 100%;
   background-color: var(--primary-color);
   border-radius: 2px;
@@ -93,7 +94,7 @@ body {
   transform: rotate(-45deg) translate(7px, -7px);
 }
 
-.logo {
+/* .logo {
   position: relative; 
   left: auto;
   transform: none;
@@ -103,10 +104,50 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
+} */
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
 }
 
 .logo i {
-  font-size: 32px; 
+  font-size: 48px; 
+}
+
+.icon-container {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  display: inline-block;
+}
+
+.icon-container .fa-map-location {
+  position: absolute;
+  top: -10%;
+  left: -15%;
+  font-size: 48px;
+  color: #4caf50; /* Cor verde do tema */
+}
+
+.icon-container .fa-bolt {
+  position: absolute;
+  top: 20%;
+  left: 52%;
+  transform: translate(-50%, -50%);
+  font-size: 16px;
+  color: white;
+  z-index: 2;
+  background: #4caf50;
+  border-radius: 50%;
+  padding: 3px;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .logo-text {
@@ -116,8 +157,9 @@ body {
 }
 
 .logo-line {
-  font-size: 16px;
+  font-size: 24px;
   font-weight: bold;
+  color: var(--primary-color);
 }
 
 .sidebar-menu a {
@@ -199,6 +241,14 @@ body {
   gap: 15px;
 }
 
+.user-info i {
+  font-size: 24px;
+}
+
+.user-name{
+  font-size: 20px;
+}
+
 .user-avatar {
   width: 40px;
   height: 40px;
@@ -210,7 +260,7 @@ body {
   display: grid;
   grid-template-columns: 1fr 450px;
   gap: 30px;
-  padding: 30px 0;
+  padding: 0px ;
   height: 100%; 
 }
 
@@ -233,6 +283,7 @@ body {
   flex-wrap: wrap;
   align-items: center;
   gap: 10px;
+  
 }
 
 .form-group {
@@ -243,6 +294,7 @@ body {
 .input-icon {
   position: relative;
   width: 100%;
+  z-index: 700
 }
 
 .input-icon i {
@@ -489,9 +541,23 @@ body {
   align-items: center;
   justify-content: center;
   color: var(--background-white);
-  margin-right: 15px;
+  margin-right: 5px;
   font-size: 20px;
 }
+
+.station-icon-inner {
+  position: relative;
+  left: 2px; /* Move o ícone 5px para a direita */
+  transition: all 0.3s ease;
+}
+
+
+.station-icon.unavailable {
+  background-color: #e74c3c; /* Vermelho */
+  position: relative;
+  overflow: hidden;
+}
+
 .station-info {
   flex: 1;
 }
@@ -612,6 +678,7 @@ body {
   align-items: center;
   opacity: 0;
   transition: opacity 0.3s ease;
+  z-index: 3000
 }
 
 .modal-car-image {
@@ -684,7 +751,7 @@ body {
 
 .autocomplete-items {
   position: absolute;
-  z-index: 1000;
+  z-index: 800;
   top: 100%;
   left: 0;
   right: 0;
