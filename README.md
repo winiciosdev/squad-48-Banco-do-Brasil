@@ -70,10 +70,9 @@ Antes de começar, certifique-se de ter instalado:
 
 squad-48-Banco-do-Brasil/
 ├── public/
-│   ├── index.html/
+│   ├── index.html
 ├── css/
 │   └── styles.css
-│   ├── pages/
 ├── js/
 │   └── scripts.js
 ├── assets/
