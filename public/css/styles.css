@@ -791,3 +791,72 @@ body {
     transform: scale(1);
   }
 }
+/* ===== RESPONSIVIDADE ===== */
+@media (max-width: 1024px) {
+  .main-content {
+    grid-template-columns: 1fr !important; /* 1 coluna em tablets */
+    gap: 15px;
+    padding: 0 10px;
+  }
+
+  .sidebar {
+    order: 2; /* Move o painel lateral para baixo do mapa*/
+    margin-bottom: 20px;
+  }
+
+  #map-container {
+    height: 400px; /* Altura menor para economizar espaço */
+  }
+}
+
+@media (max-width: 768px) {
+  .header-content {
+    padding: 10px 0;
+  }
+
+  .search-form {
+    flex-direction: column;
+  }
+
+  .form-group {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .search-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .btn {
+    width: 48%;
+    padding: 10px;
+  }
+
+  .stations-list {
+    max-height: 200px; /* Lista mais compacta */
+  }
+
+  .logo-text {
+    display: none; /* Oculta o texto do logo em mobile */
+  }
+
+  .user-name {
+    display: none; /* Oculta o nome do usuário */
+  }
+}
+
+@media (max-width: 480px) {
+  #map-container {
+    height: 300px;
+  }
+
+  .station-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .station-distance {
+    margin-top: 5px;
+  }
+}
