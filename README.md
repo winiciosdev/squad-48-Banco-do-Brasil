@@ -81,6 +81,7 @@ squad-48-Banco-do-Brasil/
 ├── package.json
 └── README.md
 └── server.js
+└── vercel.json
 ```
 
 > Se você não possui esses arquivos ainda, copie-os ou clone o repositório fornecido pela squad.
