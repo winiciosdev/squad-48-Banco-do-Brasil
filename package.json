@@ -9,6 +9,7 @@
     "dev": "nodemon server.js"
   },
   "dependencies": {
+    "@vercel/node": "^4.0.0",
     "body-parser": "^2.2.0",
     "charging-planner": "file:",
     "cors": "^2.8.5",
